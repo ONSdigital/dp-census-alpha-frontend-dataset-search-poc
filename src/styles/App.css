@@ -1,0 +1,75 @@
+.top-logo {
+    display: inline-block;
+    padding-right: 40px;
+}
+
+.restart {
+    display: inline-block;
+    float: right;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+
+.search-bar {
+    border: 3px solid #58595B;
+}
+
+.search-label {
+    color: #323132;
+}
+
+.search-result-item {
+    font-size: 21px;
+    padding: 10px 0px 10px 0px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #58595B;
+    text-align: center;
+}
+
+.condition-warn {
+    font-size: 18px;
+    padding: 1px;
+    margin: 1px;
+    color: darkred;
+}
+
+.input_adjust {
+    height: 48px;
+}
+
+.selection_adjust {
+    width: 446px;
+    margin-left: 50px;
+}
+
+.results-list {
+    margin-top: 30px;
+}
+
+.page-container {
+    position: relative;
+    min-height: 100vh;
+}
+
+.content {
+    padding-bottom: 132px;
+}
+
+.always-show-banner {
+    height: 64px;
+}
+
+.pagination-drop-down {
+    margin-left: 16px;
+    height: 42px;
+}
+
+body {
+    font-family: "Open Sans", Helvetica, Arial, sans-serif
+}
