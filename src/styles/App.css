@@ -33,6 +33,10 @@
     text-align: center;
 }
 
+.ogl {
+    margin-top: 10px
+}
+
 .condition-warn {
     font-size: 18px;
     padding: 1px;
