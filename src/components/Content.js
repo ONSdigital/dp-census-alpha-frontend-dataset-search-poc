@@ -31,7 +31,6 @@ export class Content extends React.Component {
     render() {
         const showIntro = this.state.stage === 0;
         const showSearch = this.state.stage === 1;
-        const showResults = this.state.stage === 2;
         return (
             <div className="content">
                 <Intro show={showIntro} transitionToSearch={this.transitionSearchStage}/>

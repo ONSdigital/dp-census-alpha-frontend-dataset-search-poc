@@ -27,7 +27,16 @@ export class Header extends React.Component {
                 </div>
             </div>
             <div className="primary-nav page-title font-size--sm always-show-banner">
+                <div className="wrapper">
+                    <p className="govuk-phase-banner__content">
+                        <strong className="govuk-tag govuk-phase-banner__content__tag">
+                            alpha
+                        </strong>
+                        <span className="govuk-phase-banner__text">This is a Proof-of-Concept prototype</span>
+                    </p>
+                </div>
             </div>
+
         </header>
     }
 }

@@ -17,21 +17,21 @@ export class Intro extends React.Component {
                     working project please
                     consider:</p>
                 <ul className="font-size--18">
-                    <li className="font-size--18 margin-top--0 margin-bottom--0">There might be edge cases that do not
+                    <li key="1" className="font-size--18 margin-top--0 margin-bottom--0">There might be edge cases that do not
                         work
                     </li>
-                    <li className="font-size--18 margin-top--0 margin-bottom--0">The user journey might have dead ends
+                    <li key="2" className="font-size--18 margin-top--0 margin-bottom--0">The user journey might have dead ends
                     </li>
-                    <li className="font-size--18 margin-top--0 margin-bottom--0">Not all errors when talking to APIs
+                    <li key="3"className="font-size--18 margin-top--0 margin-bottom--0">Not all errors when talking to APIs
                         will be handled well
                     </li>
-                    <li className="font-size--18 margin-top--0 margin-bottom--0">There might be down time both planned
+                    <li key="4" className="font-size--18 margin-top--0 margin-bottom--0">There might be down time both planned
                         and unexpected
                     </li>
-                    <li className="font-size--18 margin-top--0 margin-bottom--0">This Proof-of-Concept prototype is
+                    <li key="5" className="font-size--18 margin-top--0 margin-bottom--0">This Proof-of-Concept prototype is
                         using another Proof-of-Concept prototype as the backend
                     </li>
-                    <li className="font-size--18 margin-top--0 margin-bottom--0"> Only a limited sample of datasets are
+                    <li key="6" className="font-size--18 margin-top--0 margin-bottom--0"> Only a limited sample of datasets are
                         loaded into the backend
                     </li>
                 </ul>

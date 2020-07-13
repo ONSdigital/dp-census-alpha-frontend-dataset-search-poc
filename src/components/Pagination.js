@@ -3,27 +3,23 @@ import '../styles/App.css';
 
 export class Pagination extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         if (!this.props.show) {
             return null;
         }
         let listElement = [];
-        //let numIconsToDisplay = this.props.totalPages > 5 ? 5 : this.props.totalPages; // TODO switch this and line under
-        let numIconsToDisplay = 4;
+        // Only 50 datasets are loaded and are not looking like more will be added so no need to worry about showing pages like 6...9 etc (for now)
+        let numIconsToDisplay = this.props.totalPages > 5 ? 5 : this.props.totalPages;
         for (let i = 0; i < numIconsToDisplay; i++) {
             if (i === this.props.currentPageNum) {
-                listElement.push(<li className="margin-top-sm--0 margin-top-md--0">
+                listElement.push(<li key={i} className="margin-top-sm--0 margin-top-md--0">
                     <span className="page-link btn btn--plain btn--plain-active btn--block">{i + 1}</span>
                 </li>);
             } else {
-                listElement.push(<li className="margin-top-sm--0 margin-top-md--0 page-link btn btn--plain">
+                listElement.push(<li key={i} className="margin-top-sm--0 margin-top-md--0 page-link btn btn--plain">
                     <button className=" page-link btn btn--plain" type="button"
                             onClick={
-                                ()=>{}//() => {this.props.setCurrentPage(i)}
+                                () => {this.props.setCurrentPage(i)}
                             }>{i + 1}</button>
                 </li>);
             }
@@ -34,7 +30,6 @@ export class Pagination extends React.Component {
                     <nav>
                         <ul className="list--neutral list--inline margin-right-sm--1 margin-right-md--1 margin-bottom-sm--7 margin-bottom-md--7">
                             {listElement.map(listItem => {
-                                console.log(listItem);
                                 return (
                                     <span>
                                         {listItem}

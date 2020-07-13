@@ -2,6 +2,7 @@ import React from 'react';
 import fetch from '../helpers/fetch'
 import {Results} from './Results'
 import {Pagination} from './Pagination'
+import {Warning} from './Warning'
 
 import '../styles/App.css';
 
@@ -14,7 +15,6 @@ export class Query extends React.Component {
         this.state = {
             "searchString": "",
             "errorText": "",
-            "limit": 50,
             "results": {},
             "itemsPerPage": 50,
             "totalPages": 0,
@@ -23,6 +23,7 @@ export class Query extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.changeItemsPerPage = this.changeItemsPerPage.bind(this);
         this.setCurrentPage = this.setCurrentPage.bind(this);
+        this.hideWarnings = this.hideWarnings.bind(this);
     }
 
     handleSubmit = async (e) => {
@@ -42,8 +43,9 @@ export class Query extends React.Component {
         };
         try {
             let timeout = 5000;
-            const response = await fetch(`http://34.248.174.250:10200/datasets?q=${this.state.searchString}&limit=${this.state.limit}&offset=${this.state.currentPageNum}`, requestOptions, timeout);
+            const response = await fetch(`http://34.248.174.250:10200/datasets?q=${this.state.searchString}&limit=${this.state.itemsPerPage}&offset=${this.state.currentPageNum * this.state.itemsPerPage}`, requestOptions, timeout);
             let data = await response.json();
+            let errorText = "";
             if (response.status !== 200) {
                 let errorText = "An unknown error occurred when communicating with the API";
                 switch (response.status) {
@@ -53,26 +55,32 @@ export class Query extends React.Component {
                     case 500:
                         errorText = "Error 500: Internal Server Error from API";
                         break;
+                    default: {
+                        errorText = "Unsuccessful connection to backend API";
+                        break;
+                    }
                 }
-                this.setState({errorText: "Unsuccessful connection to backend API"})
+                this.setState({errorMessage: errorText})
             }
-            console.log("data is");
-            console.log(data);
             const totalPages = Math.ceil(data.total_count / this.state.itemsPerPage);
-            this.setState(({
+            this.setState({
                     "results": [data],
-                    "totalPages": totalPages
-                }),
+                    "totalPages": totalPages,
+                    "errorMessage": errorText
+                },
                 () => {
                     this.props.setResults(this.state.results)
                 });
         } catch {
-            this.setState({errorText: "Unsuccessful connection to backend API"})
+            this.setState({errorMessage: "Unsuccessful connection to backend API"})
         }
     }
 
     setCurrentPage(value) {
-        this.setState({currentPageNum: value});
+        this.setState({currentPageNum: value}, () => {
+            this.handleSubmit();
+        });
+
     }
 
     setSearchInput(input) {
@@ -88,36 +96,45 @@ export class Query extends React.Component {
         })
     }
 
+    hideWarnings() {
+        console.log("well, should be hiding");
+        this.setState({"errorMessage": ""})
+    }
+
 
     render() {
         if (!this.props.show) {
             return null;
         }
-        const showPagination = (this.state.results[0] != null && this.state.results[0].total_count != null);
+        const showPagination = (this.state.results[0] != null && this.state.results[0].total_count != null && this.state.results[0].total_count > 0);
         return (
-            <div className="wrapper" role="search">
-                <form className="col-wrap search__form" onSubmit={this.handleSubmit}>
-                    <label className="search__label search-label col col--md-23 col--lg-24 font-size--30"
-                           htmlFor="search">Search for
-                        a dataset</label>
-                    <input type="search"
-                           autoComplete="off"
-                           className="search__input search-bar col col--md-21 col--lg-32"
-                           id="search"
-                           value={this.state.searchString}
-                           onChange={(ev) => this.setSearchInput(ev.target.value)}/>
-                    <button type="submit" className="search__button col--md-3 col--lg-3" id="nav-search-submit">
-                        <span className="icon icon-search--light"/>
-                    </button>
-                </form>
-                <Results results={this.state.results}/>
-                <Pagination show={showPagination}
-                            changeItemsPerPage={this.changeItemsPerPage}
-                            setCurrentPage={this.setCurrentPage}
-                            itemsPerPage={this.state.itemsPerPage}
-                            totalPages={this.state.totalPages}
-                            currentPageNum={this.state.currentPageNum}
-                />
+            <div>
+                <div className="wrapper" role="search">
+                    <form className="col-wrap search__form" onSubmit={this.handleSubmit}>
+                        <label className="search__label search-label col col--md-23 col--lg-24 font-size--30"
+                               htmlFor="search">Search for
+                            a dataset</label>
+                        <input type="search"
+                               autoComplete="off"
+                               className="search__input search-bar col col--md-21 col--lg-32"
+                               id="search"
+                               value={this.state.searchString}
+                               onChange={(ev) => this.setSearchInput(ev.target.value)}/>
+                        <button type="submit" className="search__button col--md-3 col--lg-3" id="nav-search-submit">
+                            <span className="icon icon-search--light"/>
+                        </button>
+                    </form>
+                    <Results results={this.state.results}/>
+                    <Pagination show={showPagination}
+                                changeItemsPerPage={this.changeItemsPerPage}
+                                setCurrentPage={this.setCurrentPage}
+                                itemsPerPage={this.state.itemsPerPage}
+                                totalPages={this.state.totalPages}
+                                currentPageNum={this.state.currentPageNum}
+                    />
+                </div>
+                <Warning message={this.state.errorMessage}
+                         hideWarnings={this.hideWarnings}/>
             </div>
         )
     }
