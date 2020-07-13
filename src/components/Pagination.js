@@ -12,11 +12,11 @@ export class Pagination extends React.Component {
         let numIconsToDisplay = this.props.totalPages > 5 ? 5 : this.props.totalPages;
         for (let i = 0; i < numIconsToDisplay; i++) {
             if (i === this.props.currentPageNum) {
-                listElement.push(<li key={i} className="margin-top-sm--0 margin-top-md--0">
+                listElement.push(<li key={i} className="margin-top-sm--0 margin-top-md--0 pagination-list-item">
                     <span className="page-link btn btn--plain btn--plain-active btn--block">{i + 1}</span>
                 </li>);
             } else {
-                listElement.push(<li key={i} className="margin-top-sm--0 margin-top-md--0 page-link btn btn--plain">
+                listElement.push(<li key={i} className="margin-top-sm--0 margin-top-md--0 page-link btn btn--plain pagination-list-item">
                     <button className=" page-link btn btn--plain" type="button"
                             onClick={
                                 () => {this.props.setCurrentPage(i)}
@@ -24,11 +24,11 @@ export class Pagination extends React.Component {
                 </li>);
             }
         }
-        return (<div>
+        return (<div className="pagination">
             <form id="js-pagination-container" className="js-auto-submit__form">
                 <div className="col col--md-22 col--lg-28">
                     <nav>
-                        <ul className="list--neutral list--inline margin-right-sm--1 margin-right-md--1 margin-bottom-sm--7 margin-bottom-md--7">
+                        <ul className="list--neutral list--inline margin-right-sm--1 margin-right-md--1">
                             {listElement.map(listItem => {
                                 return (
                                     <span>

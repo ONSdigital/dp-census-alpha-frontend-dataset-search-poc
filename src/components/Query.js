@@ -6,8 +6,6 @@ import {Warning} from './Warning'
 
 import '../styles/App.css';
 
-// TODO Search as you type
-// TODO wok out bug - pagination not sending new query but as you type is... but shouldn't
 export class Query extends React.Component {
 
     constructor(props) {
@@ -16,7 +14,7 @@ export class Query extends React.Component {
             "searchString": "",
             "errorText": "",
             "results": {},
-            "itemsPerPage": 50,
+            "itemsPerPage": 10,
             "totalPages": 0,
             "currentPageNum": 0
         };

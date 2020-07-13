@@ -33,8 +33,8 @@
     text-align: center;
 }
 
-.ogl {
-    margin-top: 10px
+.footer-license__img {
+    margin-top: 10px;
 }
 
 .condition-warn {
@@ -67,7 +67,18 @@
 }
 
 .always-show-banner {
-    height: 64px;
+    height: 66px;
+}
+
+.pagination {
+    margin-bottom: 210px;
+}
+
+.pagination-list-item {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 .pagination-drop-down {
@@ -177,6 +188,16 @@
 
 .govuk-link:link {
     colour: #1d70b8;
+}
+
+@media (max-width: 767px) {
+    .govuk-phase-banner__text {
+        font-size: 16px;
+    }
+
+    .govuk-tag {
+        font-size: 18px;
+    }
 }
 
 body {
