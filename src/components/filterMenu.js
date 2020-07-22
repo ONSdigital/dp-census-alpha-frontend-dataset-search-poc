@@ -5,32 +5,36 @@ export class FilterMenu extends React.Component {
 
     constructor(props) {
         super(props);
-        this.makeList = this.makeList.bind(this);
+        this.makeListModel = this.makeListModel.bind(this);
     }
 
 
-    makeList() {
-
+    makeListModel(list) {
+        return list.map((rootTopic, index) => {
+            let childList;
+            if (rootTopic.child_topics != null) {
+                childList = this.makeListModel(rootTopic.child_topics)
+            }
+            return <li className="filters__item">
+                <div className="filters__field">
+                    <input id="checkbox-bulletin" className="js-auto-submit__input" type="checkbox"
+                           name="filter" value="bulletin"/>
+                    <label htmlFor="checkbox-bulletin">
+                        {rootTopic.title}
+                    </label>
+                </div>
+                <ul className="list--neutral margin-top--0 margin-bottom--0">
+                    {childList}
+                </ul>
+            </li>;
+        })
     }
 
     render() {
 
         let topicFilterList = <span/>;
         if (this.props.topics[0] != null && this.props.topics[0].topics != null) {
-            topicFilterList = this.props.topics[0].topics.map((rootTopic, index) => {
-                return <li className="filters__item">
-                    <div className="filters__field">
-                        <input id="checkbox-bulletin" className="js-auto-submit__input" type="checkbox"
-                               name="filter" value="bulletin"/>
-                        <label htmlFor="checkbox-bulletin">
-                            {rootTopic.title}
-                        </label>
-                    </div>
-                    <ul className="list--neutral margin-top--0 margin-bottom--0">
-                        {this.makeList()}
-                    </ul>
-                </li>;
-            })
+            topicFilterList = this.makeListModel(this.props.topics[0].topics)
         }
 
         return (
