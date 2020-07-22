@@ -3,6 +3,7 @@ import fetch from '../helpers/fetch'
 import {Results} from './Results'
 import {Pagination} from './Pagination'
 import {Warning} from './Warning'
+import {FilterMenu} from "./filterMenu";
 
 import '../styles/App.css';
 
@@ -22,6 +23,10 @@ export class Query extends React.Component {
         this.changeItemsPerPage = this.changeItemsPerPage.bind(this);
         this.setCurrentPage = this.setCurrentPage.bind(this);
         this.hideWarnings = this.hideWarnings.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.setState({"errorText": this.state.errorMessage})
     }
 
     handleSubmit = async (e) => {
@@ -58,7 +63,7 @@ export class Query extends React.Component {
                         break;
                     }
                 }
-                this.setState({errorMessage: errorText})
+                this.setState({errorMessage: errorText || this.props.errorMessage})
             }
             const totalPages = Math.ceil(data.total_count / this.state.itemsPerPage);
             this.setState({
@@ -95,7 +100,6 @@ export class Query extends React.Component {
     }
 
     hideWarnings() {
-        console.log("well, should be hiding");
         this.setState({"errorMessage": ""})
     }
 
@@ -122,6 +126,7 @@ export class Query extends React.Component {
                             <span className="icon icon-search--light"/>
                         </button>
                     </form>
+                    <FilterMenu topics={this.props.topics}/>
                     <Results results={this.state.results}/>
                     <Pagination show={showPagination}
                                 changeItemsPerPage={this.changeItemsPerPage}

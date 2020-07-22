@@ -37,7 +37,7 @@ export class Results extends React.Component {
             });
         }
         return (
-            <div className="search-results wrapper">
+            <div className="search-results wrapper col col--md-34 col--lg-40 margin-left-md--1">
                 <ul className="list--neutral results-list">{displayList}</ul>
             </div>
         )
