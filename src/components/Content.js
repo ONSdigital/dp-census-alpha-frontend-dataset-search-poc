@@ -21,6 +21,7 @@ export class Content extends React.Component {
         this.transitionSearchStage = this.transitionSearchStage.bind(this);
         this.setResults = this.setResults.bind(this);
         this.getTaxonomy = this.getTaxonomy.bind(this);
+        this.topicSelectionChanged = this.topicSelectionChanged.bind(this);
     }
 
     transitionSearchStage() {
@@ -61,8 +62,6 @@ export class Content extends React.Component {
                 this.setState({errorMessage: errorText})
             }
             // Remove duplicates
-            console.log("data[0].topics");
-            console.log(data.topics);
             data.topics = data.topics.filter((topic, index, self) =>
                 index === self.findIndex((t) => (
                     t.filterable_title === topic.filterable_title && t.title === topic.title
@@ -77,6 +76,21 @@ export class Content extends React.Component {
         }
     }
 
+    topicSelectionChanged(value, isSelected, topics) {
+        if (topics == null) {
+            topics = this.state.topics[0].topics;
+        }
+        for (let i = 0; i < topics.length; i++) {
+            let topicObj = topics[i];
+            if (topicObj.filterable_title === value) {
+                topicObj.selected = isSelected;
+                break;
+            }
+            if (topicObj.child_topics != null) {
+                this.topicSelectionChanged(value, isSelected, topicObj.child_topics);
+            }
+        }
+    }
 
     render() {
         const showIntro = this.state.stage === 0;
@@ -85,7 +99,7 @@ export class Content extends React.Component {
             <div className="content">
                 <Intro show={showIntro} transitionToSearch={this.transitionSearchStage}/>
                 <Query show={showSearch} setResults={this.setResults} errorMessage={this.state.errorMessage}
-                       topics={this.state.topics}/>
+                       topics={this.state.topics} topicSelectionChanged={this.topicSelectionChanged}/>
             </div>
         )
     }

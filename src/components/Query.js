@@ -126,7 +126,7 @@ export class Query extends React.Component {
                             <span className="icon icon-search--light"/>
                         </button>
                     </form>
-                    <FilterMenu topics={this.props.topics}/>
+                    <FilterMenu topics={this.props.topics} topicSelectionChanged={this.props.topicSelectionChanged}/>
                     <Results results={this.state.results}/>
                     <Pagination show={showPagination}
                                 changeItemsPerPage={this.changeItemsPerPage}

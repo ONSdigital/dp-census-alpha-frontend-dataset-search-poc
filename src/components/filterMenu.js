@@ -9,32 +9,55 @@ export class FilterMenu extends React.Component {
     }
 
 
-    makeListModel(list) {
+    makeListModel(list, level, visible) {
         return list.map((rootTopic, index) => {
             let childList;
+            let paddingAmount = level * 8;
+            let listTabStyle = {
+                "paddingLeft": `${paddingAmount}px`,
+            };
             if (rootTopic.child_topics != null) {
-                childList = this.makeListModel(rootTopic.child_topics)
+                const childVisible = rootTopic.selected === true;
+                childList = this.makeListModel(rootTopic.child_topics, level + 1, childVisible);
             }
-            return <li className="filters__item">
+            return <li key={`level-${level}-index-${index}`} className={"filters__item list-item-level--" + level}>
                 <div className="filters__field">
-                    <input id="checkbox-bulletin" className="js-auto-submit__input" type="checkbox"
-                           name="filter" value="bulletin"/>
-                    <label htmlFor="checkbox-bulletin">
+                    <input id={`checkbox-bulletin-level--${level}-index--${index}`} className="js-auto-submit__input"
+                           type="checkbox"
+                           name="filter" value={rootTopic.filterable_title}
+                           onChange={(e) => {
+                               this.checkChanged(e)
+                           }}
+                    />
+                    <label htmlFor={`checkbox-bulletin-level--${level}-index--${index}`}>
                         {rootTopic.title}
                     </label>
                 </div>
-                <ul className="list--neutral margin-top--0 margin-bottom--0">
+                <ul className={`list--neutral margin-top--0 margin-bottom--0 ${visible ? "hide" : ""}`}
+                    style={listTabStyle}>
                     {childList}
                 </ul>
             </li>;
         })
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        return {
+            show: nextProps.show,
+        };
+    }
+
+    checkChanged(e) {
+        this.props.topicSelectionChanged(e.target.value, e.target.checked);
+    }
+
     render() {
 
         let topicFilterList = <span/>;
         if (this.props.topics[0] != null && this.props.topics[0].topics != null) {
-            topicFilterList = this.makeListModel(this.props.topics[0].topics)
+            const level = 1;
+            let visible = true;
+            topicFilterList = this.makeListModel(this.props.topics[0].topics, level, visible)
         }
 
         return (
