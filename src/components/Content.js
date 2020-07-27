@@ -16,12 +16,14 @@ export class Content extends React.Component {
         super(props);
         this.state = {
             stage: 0,
-            topics: {}
+            topics: {},
+            topicString: ""
         };
         this.transitionSearchStage = this.transitionSearchStage.bind(this);
         this.setResults = this.setResults.bind(this);
         this.getTaxonomy = this.getTaxonomy.bind(this);
         this.topicSelectionChanged = this.topicSelectionChanged.bind(this);
+        this.createTopicString = this.createTopicString.bind(this);
     }
 
     transitionSearchStage() {
@@ -80,6 +82,42 @@ export class Content extends React.Component {
         if (topics == null) {
             topics = this.state.topics[0].topics;
         }
+        let updatedTopicFilter = this.updateTopicSelection(value, isSelected, topics);
+        this.setState({
+                topics: [{
+                    topics: updatedTopicFilter,
+                }]
+            }, () => {
+                const topicString = this.createTopicString();
+                this.setState({topicString: topicString});
+            }
+        );
+    }
+
+    createTopicString() {
+        let topicStruct = this.state.topics[0].topics;
+        let topicString = "";
+
+        function grabFilterStrings(rootTopic, topicString) {
+            // rootTopic is an array
+            // rootTopic has child topics
+            //[{x child[a]},{y [child[b]},{z child[c]}]
+            rootTopic.forEach((topic) => {
+                if (topic.selected) {
+                    topicString += (topicString === "" ? topic.filterable_title : `,${topic.filterable_title}`);
+                }
+                if (topic.child_topics != null && topic.child_topics.length > 0) {
+                    topicString = grabFilterStrings(topic.child_topics, topicString)
+                }
+            });
+            return topicString;
+        }
+
+        topicString = grabFilterStrings(topicStruct, topicString);
+        return topicString
+    }
+
+    updateTopicSelection(value, isSelected, topics) {
         for (let i = 0; i < topics.length; i++) {
             let topicObj = topics[i];
             if (topicObj.filterable_title === value) {
@@ -87,9 +125,18 @@ export class Content extends React.Component {
                 break;
             }
             if (topicObj.child_topics != null) {
-                this.topicSelectionChanged(value, isSelected, topicObj.child_topics);
+                this.updateTopicSelection(value, isSelected, topicObj.child_topics);
             }
         }
+        if (isSelected) {
+            this.checkSelectionAndLimit(value, topics);
+        }
+
+        return topics;
+    }
+
+    checkSelectionAndLimit(value, topics) {
+
     }
 
     render() {
@@ -99,7 +146,8 @@ export class Content extends React.Component {
             <div className="content">
                 <Intro show={showIntro} transitionToSearch={this.transitionSearchStage}/>
                 <Query show={showSearch} setResults={this.setResults} errorMessage={this.state.errorMessage}
-                       topics={this.state.topics} topicSelectionChanged={this.topicSelectionChanged}/>
+                       topics={this.state.topics} topicSelectionChanged={this.topicSelectionChanged}
+                       topicString={this.state.topicString}/>
             </div>
         )
     }
