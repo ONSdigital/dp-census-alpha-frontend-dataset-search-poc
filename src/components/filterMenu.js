@@ -60,9 +60,6 @@ export class FilterMenu extends React.Component {
             const level = 1;
             topicFilterList = this.makeListModel(this.props.topics[0].topics, level)
         }
-        console.log("Rendering filterMenu, topics is:");
-        console.log(this.props.topics[0].topics);
-        // TODO clear all
         return (
             <form id="form" className="js-auto-submit__form">
                 <div className="col col--md-12 col--lg-18 margin-bottom">

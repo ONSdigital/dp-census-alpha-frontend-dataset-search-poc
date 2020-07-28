@@ -29,6 +29,12 @@ export class Query extends React.Component {
         this.setState({"errorText": this.state.errorMessage})
     }
 
+    static getDerivedStateFromProps(nextProps) {
+        return {
+            topicString: nextProps.topicString
+        };
+    }
+
     handleSubmit = async (e) => {
         if (e != null) {
             e.preventDefault();
@@ -109,8 +115,6 @@ export class Query extends React.Component {
             return null;
         }
         const showPagination = (this.state.results[0] != null && this.state.results[0].total_count != null && this.state.results[0].total_count > 0);
-        console.log("Rendering Query, topics is:");
-        console.log(this.props.topics[0].topics);
         return (
             <div>
                 <div className="wrapper" role="search">

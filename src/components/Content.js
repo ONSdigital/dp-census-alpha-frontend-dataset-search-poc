@@ -8,6 +8,7 @@ import fetch from "../helpers/fetch";
 
 export class Content extends React.Component {
 
+
     state = {
         stage: 0
     };
@@ -19,6 +20,8 @@ export class Content extends React.Component {
             topics: {},
             topicString: ""
         };
+
+
         this.transitionSearchStage = this.transitionSearchStage.bind(this);
         this.setResults = this.setResults.bind(this);
         this.getTaxonomy = this.getTaxonomy.bind(this);
@@ -95,6 +98,7 @@ export class Content extends React.Component {
                 this.setState({topicString: topicString});
             }
         );
+        // make a request
     }
 
     createTopicString() {
@@ -121,10 +125,23 @@ export class Content extends React.Component {
     }
 
     updateTopicSelection(value, isSelected, topics) {
+        const deselectAll = (rootTopic) => {
+            rootTopic.child_topics.forEach((aTopic) => {
+                aTopic.selected = false;
+                if (aTopic.child_topics != null) {
+                    deselectAll(aTopic);
+                }
+            })
+        }
+
         for (let i = 0; i < topics.length; i++) {
             let topicObj = topics[i];
             if (topicObj.filterable_title === value) {
                 topicObj.selected = isSelected;
+                if (topicObj.child_topics != null && isSelected === false) {
+                    // deselect all children
+                    deselectAll(topicObj);
+                }
                 break;
             }
             if (topicObj.child_topics != null) {
@@ -159,16 +176,13 @@ export class Content extends React.Component {
                 }
             })
         } else {
+            // checkSelectionAndLimit needs the child_topics array  for each item in topics
+            topics.forEach((aTopic) => {
+                if (aTopic.child_topics != null) {
+                    this.checkSelectionAndLimit(value, aTopic.child_topics)
+                }
+            })
             // drill down to filter children children values
-            if (topics.child_topics != null) {
-
-                topics.child_topics.forEach((childTopic) => {
-                    this.checkSelectionAndLimit(value, childTopic)
-                });
-
-            }
-
-
         }
         return topics
     }
@@ -194,12 +208,6 @@ export class Content extends React.Component {
     render() {
         const showIntro = this.state.stage === 0;
         const showSearch = this.state.stage === 1;
-
-        if (this.state.topics[0] != null && this.state.topics.topics != null) {
-            console.log("Rendering content, topics is:");
-            console.log(this.state.topics);
-        }
-
 
         return (
             <div className="content">
