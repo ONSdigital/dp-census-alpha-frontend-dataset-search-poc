@@ -109,6 +109,8 @@ export class Query extends React.Component {
             return null;
         }
         const showPagination = (this.state.results[0] != null && this.state.results[0].total_count != null && this.state.results[0].total_count > 0);
+        console.log("Rendering Query, topics is:");
+        console.log(this.props.topics[0].topics);
         return (
             <div>
                 <div className="wrapper" role="search">
@@ -126,7 +128,10 @@ export class Query extends React.Component {
                             <span className="icon icon-search--light"/>
                         </button>
                     </form>
-                    <FilterMenu topics={this.props.topics} topicSelectionChanged={this.props.topicSelectionChanged}/>
+                    <FilterMenu topics={this.props.topics}
+                                topicSelectionChanged={this.props.topicSelectionChanged}
+                                clearAll={this.props.clearAll}
+                    />
                     <Results results={this.state.results}/>
                     <Pagination show={showPagination}
                                 changeItemsPerPage={this.changeItemsPerPage}

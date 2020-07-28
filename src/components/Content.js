@@ -24,6 +24,7 @@ export class Content extends React.Component {
         this.getTaxonomy = this.getTaxonomy.bind(this);
         this.topicSelectionChanged = this.topicSelectionChanged.bind(this);
         this.createTopicString = this.createTopicString.bind(this);
+        this.clearAll = this.clearAll.bind(this);
     }
 
     transitionSearchStage() {
@@ -83,6 +84,8 @@ export class Content extends React.Component {
             topics = this.state.topics[0].topics;
         }
         let updatedTopicFilter = this.updateTopicSelection(value, isSelected, topics);
+        updatedTopicFilter = this.checkSelectionAndLimit(value, updatedTopicFilter);
+        console.log(updatedTopicFilter);
         this.setState({
                 topics: [{
                     topics: updatedTopicFilter,
@@ -128,26 +131,86 @@ export class Content extends React.Component {
                 this.updateTopicSelection(value, isSelected, topicObj.child_topics);
             }
         }
-        if (isSelected) {
-            this.checkSelectionAndLimit(value, topics);
-        }
 
         return topics;
     }
 
     checkSelectionAndLimit(value, topics) {
+        // 1. For each tier get all that have value 'selected' as true
+        // 2. If the new 'value' is in there then set all the others to false
+        // 3. recursive, if not then dig a layer deeper and repeat
 
+        let selectedAtTier = topics.filter(obj => {
+            return obj.selected === true
+        });
+        if (selectedAtTier.length > 1) { // new selection is at this level
+            selectedAtTier.forEach((selectedObj) => {
+                if (selectedObj.filterable_title !== value) {
+                    // Todo iterate down whole tree and remove all
+                    let removeAllSelectedChildTopics = (rootTopic) => {
+                        rootTopic.selected = false;
+                        if (rootTopic.child_topics != null) {
+                            rootTopic.child_topics.forEach((aTopic) => {
+                                removeAllSelectedChildTopics(aTopic);
+                            });
+                        }
+                    };
+                    removeAllSelectedChildTopics(selectedObj);
+                }
+            })
+        } else {
+            // drill down to filter children children values
+            if (topics.child_topics != null) {
+
+                topics.child_topics.forEach((childTopic) => {
+                    this.checkSelectionAndLimit(value, childTopic)
+                });
+
+            }
+
+
+        }
+        return topics
+    }
+
+    clearAll() {
+        if (this.state.topics[0] && this.state.topics[0].topics != null) {
+            let topic = this.state.topics[0].topics;
+            const clearTopicLevel = (rootTopic) => {
+                rootTopic.forEach((childTopic) => {
+                    childTopic.selected = false;
+                    if (childTopic.child_topics != null && childTopic.child_topics.length > 0) {
+                        clearTopicLevel(childTopic.child_topics);
+                    }
+                })
+            }
+            clearTopicLevel(topic);
+            let newTopicList = [{topics: topic}];
+            this.setState({topics: newTopicList})
+
+        }
     }
 
     render() {
         const showIntro = this.state.stage === 0;
         const showSearch = this.state.stage === 1;
+
+        if (this.state.topics[0] != null && this.state.topics.topics != null) {
+            console.log("Rendering content, topics is:");
+            console.log(this.state.topics);
+        }
+
+
         return (
             <div className="content">
                 <Intro show={showIntro} transitionToSearch={this.transitionSearchStage}/>
-                <Query show={showSearch} setResults={this.setResults} errorMessage={this.state.errorMessage}
-                       topics={this.state.topics} topicSelectionChanged={this.topicSelectionChanged}
-                       topicString={this.state.topicString}/>
+                <Query show={showSearch}
+                       setResults={this.setResults}
+                       errorMessage={this.state.errorMessage}
+                       topics={this.state.topics}
+                       topicSelectionChanged={this.topicSelectionChanged}
+                       topicString={this.state.topicString}
+                       clearAll={this.clearAll}/>
             </div>
         )
     }

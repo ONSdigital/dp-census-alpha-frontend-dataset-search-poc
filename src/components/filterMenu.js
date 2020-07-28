@@ -27,6 +27,7 @@ export class FilterMenu extends React.Component {
                            className="js-auto-submit__input"
                            type="checkbox"
                            name="filter" value={rootTopic.filterable_title}
+                           checked={rootTopic.selected}
                            onChange={(e) => {
                                this.checkChanged(e)
                            }}
@@ -43,7 +44,7 @@ export class FilterMenu extends React.Component {
         })
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
+    static getDerivedStateFromProps(nextProps) {
         return {
             topics: nextProps.topics
         };
@@ -59,6 +60,8 @@ export class FilterMenu extends React.Component {
             const level = 1;
             topicFilterList = this.makeListModel(this.props.topics[0].topics, level)
         }
+        console.log("Rendering filterMenu, topics is:");
+        console.log(this.props.topics[0].topics);
         // TODO clear all
         return (
             <form id="form" className="js-auto-submit__form">
@@ -67,9 +70,13 @@ export class FilterMenu extends React.Component {
                         <div
                             className="background--gallery padding-top-md--2 padding-right-md--1 padding-bottom-md--4 padding-left-sm--1 padding-left-md--1 flush js-mobile-filters__title">
                             <h3 className="inline-block flush">Refine results</h3>
-                            <a href="/search?q=test" id="clear-search"
-                               className="btn btn--primary btn--thin btn--narrow btn--small float-right">Clear
-                                all</a>
+                            <button type="button"
+                                    className="btn btn--primary btn--thin btn--narrow btn--small float-right"
+                                    onClick={() => {
+                                        this.props.clearAll()
+                                    }}
+                            >Clear all
+                            </button>
                         </div>
                         <div
                             className="background--mercury border-top--iron-md padding-top-sm--2 padding-top-md--1 padding-right-sm--1 padding-right-md--1 padding-bottom-sm--2 padding-bottom-md--2 padding-left-sm--1 padding-left-md--1 js-mobile-filters__contents">
@@ -85,10 +92,6 @@ export class FilterMenu extends React.Component {
                                 </fieldset>
                                 <input className="sort__input" type="hidden" name="q" value="test"/>
                             </div>
-                            {/*<button type="submit"*/}
-                            {/*        className="btn btn--primary btn--thick margin-top-sm--2 margin-top-md--2 js-submit-button"*/}
-                            {/*        style="display: none;">Filter*/}
-                            {/*</button>*/}
                         </div>
                     </div>
                 </div>
