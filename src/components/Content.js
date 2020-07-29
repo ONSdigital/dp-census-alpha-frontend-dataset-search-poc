@@ -18,7 +18,8 @@ export class Content extends React.Component {
         this.state = {
             stage: 0,
             topics: {},
-            topicString: ""
+            topicString: "",
+            shouldRunQuery: false
         };
 
 
@@ -95,7 +96,7 @@ export class Content extends React.Component {
                 }]
             }, () => {
                 const topicString = this.createTopicString();
-                this.setState({topicString: topicString});
+                this.setState({topicString: topicString, shouldRunQuery: true});
             }
         );
         // make a request
@@ -218,7 +219,9 @@ export class Content extends React.Component {
                        topics={this.state.topics}
                        topicSelectionChanged={this.topicSelectionChanged}
                        topicString={this.state.topicString}
-                       clearAll={this.clearAll}/>
+                       clearAll={this.clearAll}
+                       shouldRunQuery={this.state.shouldRunQuery}
+                />
             </div>
         )
     }

@@ -17,7 +17,8 @@ export class Query extends React.Component {
             "results": {},
             "itemsPerPage": 10,
             "totalPages": 0,
-            "currentPageNum": 0
+            "currentPageNum": 0,
+            "shouldRunQuery": false
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.changeItemsPerPage = this.changeItemsPerPage.bind(this);
@@ -31,8 +32,16 @@ export class Query extends React.Component {
 
     static getDerivedStateFromProps(nextProps) {
         return {
-            topicString: nextProps.topicString
+            topicString: nextProps.topicString, shouldRunQuery: nextProps.shouldRunQuery
         };
+    }
+
+    componentDidUpdate(nextProps, nextState) {
+        if (this.state.shouldRunQuery) {
+            // this.setState({shouldRunQuery: false}, () => {
+            //     this.handleSubmit();
+            // })
+        }
     }
 
     handleSubmit = async (e) => {

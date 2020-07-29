@@ -187,7 +187,13 @@
 }
 
 .govuk-link:link {
-    colour: #1d70b8;
+    color: #1d70b8;
+}
+
+.instruction-text {
+    color: rgb(200, 18, 18);
+    padding: 0;
+    font-weight: bold;
 }
 
 @media (max-width: 767px) {

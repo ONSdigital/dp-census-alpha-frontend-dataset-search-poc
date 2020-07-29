@@ -74,6 +74,7 @@ export class FilterMenu extends React.Component {
                                     }}
                             >Clear all
                             </button>
+                            <p className={"font-size--18 instruction-text"}>Click search after selecting refinement options</p>
                         </div>
                         <div
                             className="background--mercury border-top--iron-md padding-top-sm--2 padding-top-md--1 padding-right-sm--1 padding-right-md--1 padding-bottom-sm--2 padding-bottom-md--2 padding-left-sm--1 padding-left-md--1 js-mobile-filters__contents">
