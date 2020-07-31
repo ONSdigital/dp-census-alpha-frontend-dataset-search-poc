@@ -12,7 +12,7 @@ export class Pagination extends React.Component {
         let numIconsToDisplay = this.props.totalPages > 5 ? 5 : this.props.totalPages;
         for (let i = 0; i < numIconsToDisplay; i++) {
             if (i === this.props.currentPageNum) {
-                listElement.push(<li key={i} className="margin-top-sm--0 margin-top-md--0 pagination-list-item">
+                listElement.push(<li key={i + "-current"} className="margin-top-sm--0 margin-top-md--0 pagination-list-item">
                     <span className="page-link btn btn--plain btn--plain-active btn--block">{i + 1}</span>
                 </li>);
             } else {

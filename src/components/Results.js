@@ -24,36 +24,54 @@ export class Results extends React.Component {
                 if (topic.length > 0) {
                     topicHTML = <span className={"search-results__meta"}>Topic: {topic}<br/></span>;
                 }
-                let aSingleResultHTML = function createMarkupForDescription() {
-                    let description = singleResult.description;
+
+                let aSingleResultTitleHTML = () => {
+                    let title = singleResult.title
                     if (singleResult.matches != null &&
-                        singleResult.matches != null &&
+                        singleResult.matches.title != null &&
+                        singleResult.matches.title[0] != null &&
+                        singleResult.matches.title[0].indexOf("<b><em>") > -1
+                    ) {
+                        title = singleResult.matches.title[0];
+                    }
+                    return {
+                        __html: `${title}`
+                    };
+                }
+                let aSingleResultMetaHTML = () => {
+                    let description = "";
+                    if (singleResult.matches != null &&
                         singleResult.matches.description != null &&
                         singleResult.matches.description[0] != null &&
                         singleResult.matches.description[0].indexOf("<b><em>") > -1
                     ) {
                         description = singleResult.matches.description[0];
+                        //TODO
+                        if (singleResult.description != null) {
+                            let plainMatch = singleResult.matches.description[0].replace(/<b>|<\/b>|<em>|<\/em>/gi, "")
+                            let startPos = singleResult.description.indexOf(plainMatch);
+                            let endPos = plainMatch.length;
+                            description = singleResult.description.substring(0, startPos) + singleResult.matches.description[0] + singleResult.description.substring(startPos+endPos);
+                        }
+
+                    } else if (singleResult.description != null) {
+                        description = singleResult.description;
                     }
                     return {
                         __html:
-                            `
-                            Code: ${singleResult.alias}<br/>
+                            `Code: ${singleResult.alias}<br/>
                             ${description}`
                     };
-                    //     __html:
-                    // <p className="search-results__meta">
-                    //     {topicHTML}
-                    //     Code: {singleResult.alias}<br/>
-                    //     {description}
-                    // </p>
-
                 }
                 return <li key={index} className="col col--md-34 col--lg-50 search-results__item search-result-item">
                     <a href={singleResult.link}>
-                        {singleResult.title}<br/>
+                        <span dangerouslySetInnerHTML={aSingleResultTitleHTML()}></span>
+                        <br/>
+                    </a>
+                    <a href={singleResult.link}>
                         {topicHTML}
                         <p className="search-results__meta"
-                           dangerouslySetInnerHTML={aSingleResultHTML()}></p>
+                           dangerouslySetInnerHTML={aSingleResultMetaHTML()}></p>
                     </a>
                 </li>;
             });
