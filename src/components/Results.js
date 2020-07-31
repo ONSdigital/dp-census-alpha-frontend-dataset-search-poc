@@ -20,18 +20,40 @@ export class Results extends React.Component {
                         }
                     }
                 }
-                let topicHTML = <span></span>;
+                let topicHTML = <span className={"search-results__meta"}></span>;
                 if (topic.length > 0) {
-                    topicHTML = <span>Topic: {topic}<br/></span>;
+                    topicHTML = <span className={"search-results__meta"}>Topic: {topic}<br/></span>;
+                }
+                let aSingleResultHTML = function createMarkupForDescription() {
+                    let description = singleResult.description;
+                    if (singleResult.matches != null &&
+                        singleResult.matches != null &&
+                        singleResult.matches.description != null &&
+                        singleResult.matches.description[0] != null &&
+                        singleResult.matches.description[0].indexOf("<b><em>") > -1
+                    ) {
+                        description = singleResult.matches.description[0];
+                    }
+                    return {
+                        __html:
+                            `
+                            Code: ${singleResult.alias}<br/>
+                            ${description}`
+                    };
+                    //     __html:
+                    // <p className="search-results__meta">
+                    //     {topicHTML}
+                    //     Code: {singleResult.alias}<br/>
+                    //     {description}
+                    // </p>
+
                 }
                 return <li key={index} className="col col--md-34 col--lg-50 search-results__item search-result-item">
                     <a href={singleResult.link}>
-                        {singleResult.title}
-                        <p className="search-results__meta">
-                            {topicHTML}
-                            Code: {singleResult.alias}<br/>
-                            {singleResult.description}
-                        </p>
+                        {singleResult.title}<br/>
+                        {topicHTML}
+                        <p className="search-results__meta"
+                           dangerouslySetInnerHTML={aSingleResultHTML()}></p>
                     </a>
                 </li>;
             });

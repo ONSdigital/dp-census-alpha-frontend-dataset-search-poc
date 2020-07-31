@@ -164,7 +164,6 @@ export class Content extends React.Component {
         if (selectedAtTier.length > 1) { // new selection is at this level
             selectedAtTier.forEach((selectedObj) => {
                 if (selectedObj.filterable_title !== value) {
-                    // Todo iterate down whole tree and remove all
                     let removeAllSelectedChildTopics = (rootTopic) => {
                         rootTopic.selected = false;
                         if (rootTopic.child_topics != null) {
