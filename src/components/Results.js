@@ -46,22 +46,38 @@ export class Results extends React.Component {
                         singleResult.matches.description[0].indexOf("<b><em>") > -1
                     ) {
                         description = singleResult.matches.description[0];
-                        //TODO
                         if (singleResult.description != null) {
                             let plainMatch = singleResult.matches.description[0].replace(/<b>|<\/b>|<em>|<\/em>/gi, "")
                             let startPos = singleResult.description.indexOf(plainMatch);
                             let endPos = plainMatch.length;
-                            description = singleResult.description.substring(0, startPos) + singleResult.matches.description[0] + singleResult.description.substring(startPos+endPos);
+                            description = singleResult.description.substring(0, startPos) + singleResult.matches.description[0] + singleResult.description.substring(startPos + endPos);
                         }
 
                     } else if (singleResult.description != null) {
                         description = singleResult.description;
                     }
-                    return {
-                        __html:
-                            `Code: ${singleResult.alias}<br/>
-                            ${description}`
-                    };
+
+                    let dimensionMatch = ""
+                    if (singleResult.matches != null &&
+                        singleResult.matches["dimensions.name"] != null &&
+                        singleResult.matches["dimensions.name"][0] != null &&
+                        singleResult.matches["dimensions.name"][0].indexOf("<b><em>") > -1) {
+                        dimensionMatch = "Dimension name match: " + singleResult.matches["dimensions.name"][0];
+                    }
+                    if (description != ""){
+                        return {
+                            __html:
+                                `Code: ${singleResult.alias}<br/>
+                                ${description} <br/>
+                                ${dimensionMatch}`
+                        };
+                    } else {
+                        return {
+                            __html:
+                                `Code: ${singleResult.alias}<br/>
+                                ${dimensionMatch}`
+                        };
+                    }
                 }
                 return <li key={index} className="col col--md-34 col--lg-50 search-results__item search-result-item">
                     <a href={singleResult.link}>
