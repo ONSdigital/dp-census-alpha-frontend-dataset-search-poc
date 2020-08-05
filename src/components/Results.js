@@ -57,14 +57,22 @@ export class Results extends React.Component {
                         description = singleResult.description;
                     }
 
-                    let dimensionMatch = ""
+                    let dimensionMatch = "";
+                    let dimMatchResults = "";
+
                     if (singleResult.matches != null &&
-                        singleResult.matches["dimensions.name"] != null &&
-                        singleResult.matches["dimensions.name"][0] != null &&
-                        singleResult.matches["dimensions.name"][0].indexOf("<b><em>") > -1) {
-                        dimensionMatch = "Dimension name match: " + singleResult.matches["dimensions.name"][0];
+                        singleResult.matches["dimensions.name"] != null) {
+                        singleResult.matches["dimensions.name"].forEach((dim) => {
+                            if (dim.indexOf("<b><em>") > -1) {
+                                dimMatchResults += `${dim},`;
+                            }
+                        })
+                        if (dimMatchResults.slice(dimensionMatch.length - 1) === ",") {
+                            dimMatchResults = dimMatchResults.slice(0, dimensionMatch.length - 1)
+                        }
                     }
-                    if (description !== ""){
+                    dimensionMatch = "Dimension name match: " + dimMatchResults;
+                    if (description !== "") {
                         return {
                             __html:
                                 `Code: ${singleResult.alias}<br/>
@@ -87,7 +95,7 @@ export class Results extends React.Component {
                     <a href={singleResult.link}>
                         {topicHTML}
                         <p className="search-results__meta"
-    dangerouslySetInnerHTML={aSingleResultMetaHTML()}/>
+                           dangerouslySetInnerHTML={aSingleResultMetaHTML()}/>
                     </a>
                 </li>;
             });
