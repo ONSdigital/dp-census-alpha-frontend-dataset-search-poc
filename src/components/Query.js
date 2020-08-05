@@ -61,7 +61,7 @@ export class Query extends React.Component {
         };
         try {
             let timeout = 5000;
-            const response = await fetch(`http://34.248.174.250:10200/datasets?q=${this.state.searchString}&limit=${this.state.itemsPerPage}&offset=${this.state.currentPageNum * this.state.itemsPerPage}&topics=${this.props.topicString}`, requestOptions, timeout);
+            const response = await fetch(`http://34.248.174.250:10200/datasets?q=${this.state.searchString}&limit=${this.state.itemsPerPage}&offset=${this.state.currentPageNum * this.state.itemsPerPage}&topics=${this.props.topicString}&dimensions=${this.props.dimensionsString}`, requestOptions, timeout);
             let data = await response.json();
             let errorText = "";
             if (response.status !== 200) {
@@ -144,6 +144,8 @@ export class Query extends React.Component {
                     <FilterMenu topics={this.props.topics}
                                 topicSelectionChanged={this.props.topicSelectionChanged}
                                 clearAll={this.props.clearAll}
+                                dimensions={this.props.dimensions}
+                                dimensionsSelectionChanged={this.props.dimensionsSelectionChanged}
                     />
                     <Results results={this.state.results}/>
                     <Pagination show={showPagination}

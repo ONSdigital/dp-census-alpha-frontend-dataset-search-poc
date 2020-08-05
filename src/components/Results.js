@@ -20,7 +20,7 @@ export class Results extends React.Component {
                         }
                     }
                 }
-                let topicHTML = <span className={"search-results__meta"}></span>;
+                let topicHTML = <span className={"search-results__meta"}/>;
                 if (topic.length > 0) {
                     topicHTML = <span className={"search-results__meta"}>Topic: {topic}<br/></span>;
                 }
@@ -64,7 +64,7 @@ export class Results extends React.Component {
                         singleResult.matches["dimensions.name"][0].indexOf("<b><em>") > -1) {
                         dimensionMatch = "Dimension name match: " + singleResult.matches["dimensions.name"][0];
                     }
-                    if (description != ""){
+                    if (description !== ""){
                         return {
                             __html:
                                 `Code: ${singleResult.alias}<br/>
@@ -81,13 +81,13 @@ export class Results extends React.Component {
                 }
                 return <li key={index} className="col col--md-34 col--lg-50 search-results__item search-result-item">
                     <a href={singleResult.link}>
-                        <span dangerouslySetInnerHTML={aSingleResultTitleHTML()}></span>
+                        <span dangerouslySetInnerHTML={aSingleResultTitleHTML()}/>
                         <br/>
                     </a>
                     <a href={singleResult.link}>
                         {topicHTML}
                         <p className="search-results__meta"
-                           dangerouslySetInnerHTML={aSingleResultMetaHTML()}></p>
+    dangerouslySetInnerHTML={aSingleResultMetaHTML()}/>
                     </a>
                 </li>;
             });

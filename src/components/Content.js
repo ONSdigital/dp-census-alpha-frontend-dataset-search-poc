@@ -19,6 +19,7 @@ export class Content extends React.Component {
             stage: 0,
             topics: {},
             topicString: "",
+            dimensionsString: "",
             shouldRunQuery: false
         };
 
@@ -27,7 +28,10 @@ export class Content extends React.Component {
         this.setResults = this.setResults.bind(this);
         this.getTaxonomy = this.getTaxonomy.bind(this);
         this.topicSelectionChanged = this.topicSelectionChanged.bind(this);
+        this.dimensionsSelectionChanged = this.dimensionsSelectionChanged.bind(this);
         this.createTopicString = this.createTopicString.bind(this);
+        this.clearAllTopics = this.clearAllTopics.bind(this);
+        this.clearAllDimensions = this.clearAllDimensions.bind(this);
         this.clearAll = this.clearAll.bind(this);
     }
 
@@ -39,8 +43,43 @@ export class Content extends React.Component {
         this.setState({"results": results})
     }
 
-    componentDidMount() {
-        this.getTaxonomy();
+    async componentDidMount() {
+        await this.getTaxonomy();
+        await this.getDimensions();
+    }
+
+    async getDimensions() {
+        const requestOptions = {
+            method: 'GET',
+        };
+        try {
+            let timeout = 5000;
+            const response = await fetch(`http://34.248.174.250:10200/dimensions`, requestOptions, timeout);
+            let data = await response.json();
+            let errorText = "";
+            if (response.status !== 200) {
+                let errorText = "An unknown error occurred when communicating with the API";
+                switch (response.status) {
+                    case 400:
+                        errorText = "Error 400: Bad Request from API";
+                        break;
+                    case 500:
+                        errorText = "Error 500: Internal Server Error from API";
+                        break;
+                    default: {
+                        errorText = "Unsuccessful connection to backend API";
+                        break;
+                    }
+                }
+                this.setState({errorMessage: errorText})
+            }
+            this.setState({
+                "dimensions": data.items,
+                "errorMessage": errorText
+            });
+        } catch {
+            this.setState({"errorMessage": "Unsuccessful connection to backend API"})
+        }
     }
 
     async getTaxonomy() {
@@ -83,13 +122,38 @@ export class Content extends React.Component {
         }
     }
 
+    dimensionsSelectionChanged(value, isSelected) {
+        let dimensions = this.state.dimensions;
+        dimensions.forEach((dim) => {
+            if (dim.name === value) {
+                dim.selected = isSelected;
+            }
+        })
+
+        let dimensionsString = "";
+        dimensions.forEach((dim) => {
+            if (dim.selected) {
+                dimensionsString += `${dim.name},`
+            }
+        })
+        this.setState({
+            "dimensions": dimensions,
+        }, () => {
+            if (dimensionsString.slice(dimensionsString.length - 1) === ",") {
+                dimensionsString = dimensionsString.slice(0, dimensionsString.length - 1);
+            }
+            this.setState({"dimensionsString": dimensionsString})
+
+
+        })
+    }
+
     topicSelectionChanged(value, isSelected, topics) {
         if (topics == null) {
             topics = this.state.topics[0].topics;
         }
         let updatedTopicFilter = this.updateTopicSelection(value, isSelected, topics);
         updatedTopicFilter = this.checkSelectionAndLimit(value, updatedTopicFilter);
-        console.log(updatedTopicFilter);
         this.setState({
                 topics: [{
                     topics: updatedTopicFilter,
@@ -187,7 +251,7 @@ export class Content extends React.Component {
         return topics
     }
 
-    clearAll() {
+    clearAllTopics() {
         if (this.state.topics[0] && this.state.topics[0].topics != null) {
             let topic = this.state.topics[0].topics;
             const clearTopicLevel = (rootTopic) => {
@@ -200,9 +264,23 @@ export class Content extends React.Component {
             }
             clearTopicLevel(topic);
             let newTopicList = [{topics: topic}];
-            this.setState({topics: newTopicList})
-
+            this.setState({"topics": newTopicList, "topicString": ""})
         }
+    }
+
+    clearAllDimensions() {
+        if (this.state.dimensions != null) {
+            let dimensions = this.state.dimensions;
+            dimensions.forEach((dimension) => {
+                dimension.selected = false;
+            })
+            this.setState({"dimensions": dimensions, "dimensionsString": ""})
+        }
+    }
+
+    clearAll() {
+        this.clearAllTopics();
+        this.clearAllDimensions();
     }
 
     render() {
@@ -218,6 +296,9 @@ export class Content extends React.Component {
                        topics={this.state.topics}
                        topicSelectionChanged={this.topicSelectionChanged}
                        topicString={this.state.topicString}
+                       dimensions={this.state.dimensions}
+                       dimensionsSelectionChanged={this.dimensionsSelectionChanged}
+                       dimensionsString={this.state.dimensionsString}
                        clearAll={this.clearAll}
                        shouldRunQuery={this.state.shouldRunQuery}
                 />

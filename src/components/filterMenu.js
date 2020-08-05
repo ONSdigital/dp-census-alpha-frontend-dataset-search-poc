@@ -1,5 +1,7 @@
 import React from 'react';
 import '../styles/App.css';
+import {DimMenu} from "./DimMenu";
+
 
 export class FilterMenu extends React.Component {
 
@@ -88,7 +90,10 @@ export class FilterMenu extends React.Component {
                                         </ul>
                                     </div>
                                 </fieldset>
-                                <input className="sort__input" type="hidden" name="q" value="test"/>
+                                <DimMenu dimensions={this.props.dimensions}
+                                         dimensionsSelectionChanged={this.props.dimensionsSelectionChanged}
+                                         clearAllDimensions={this.props.clearAllDimensions}/>
+                                         <input className="sort__input" type="hidden" name="q" value="test"/>
                             </div>
                         </div>
                     </div>
